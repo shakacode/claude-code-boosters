@@ -30,6 +30,35 @@ Copy `commands/address-review.md` to your `~/.claude/commands/` directory:
 cp commands/address-review.md ~/.claude/commands/
 ```
 
+### `/review-all-prs`
+
+Review all open PRs or a specific PR with comprehensive code analysis and post reviews directly to GitHub.
+
+**Usage:**
+- `/review-all-prs` - Review all open PRs and post comments
+- `/review-all-prs 347` - Review only PR #347 and post comment
+- `/review-all-prs --dry-run` - Review all PRs without posting (preview mode)
+- `/review-all-prs 347 --dry-run` - Review PR #347 without posting
+
+**Features:**
+- Comprehensive analysis: code quality, security, performance, testing, documentation
+- Structured review format matching GitHub Actions Claude Code reviews
+- Dry-run mode for testing before posting publicly
+- Rate limiting warnings for batch reviews
+- Error handling for common issues
+
+**Installation:**
+
+Copy `commands/review-all-prs.md` to your `~/.claude/commands/` directory:
+
+```bash
+cp commands/review-all-prs.md ~/.claude/commands/
+```
+
+**Documentation:**
+- Full usage guide: [docs/review-all-prs-usage.md](docs/review-all-prs-usage.md)
+- Example review: [docs/sample-review-output.md](docs/sample-review-output.md)
+
 ## Contributing
 
 Add new commands, agents, or skills by creating appropriately named markdown files in their respective directories.

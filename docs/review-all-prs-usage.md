@@ -4,7 +4,7 @@
 The `/review-all-prs` command provides automated, comprehensive code reviews that match the quality of GitHub Actions Claude Code reviews, but can be run on-demand from the Claude CLI.
 
 ## Command Location
-`.claude/commands/review-all-prs.md`
+`commands/review-all-prs.md` (install to `~/.claude/commands/review-all-prs.md`)
 
 ## Usage Modes
 
@@ -105,7 +105,7 @@ Reviews are posted in this structured format:
 
 ## Example Output
 
-See `sample_review_output.md` for a complete example review of PR #347, which demonstrates:
+See [sample-review-output.md](sample-review-output.md) for a complete example review of PR #347, which demonstrates:
 - Identification of subtle behavioral changes
 - Security-positive observations
 - Specific file/line references
