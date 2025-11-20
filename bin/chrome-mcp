@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Start Chrome with a separate profile for MCP/debugging
+# This keeps it isolated from your regular browsing
+
+CHROME_APP="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+PROFILE_DIR="$HOME/Library/Application Support/Google/Chrome-MCP-Profile"
+DEBUGGING_PORT=9222
+
+# Allow passing a URL as first argument, default to PR review app
+URL="${1:-https://rails-pdzxq1kxxwqg8.cpln.app/}"
+
+echo "🚀 Starting Chrome with MCP profile..."
+echo "📁 Profile: $PROFILE_DIR"
+echo "🔌 Debug port: $DEBUGGING_PORT"
+echo "🌐 Opening: $URL"
+echo ""
+echo "✋ To stop: Close the Chrome window or press Ctrl+C here"
+echo ""
+
+"$CHROME_APP" \
+  --user-data-dir="$PROFILE_DIR" \
+  --remote-debugging-port=$DEBUGGING_PORT \
+  --remote-debugging-address=127.0.0.1 \
+  --no-first-run \
+  --no-default-browser-check \
+  "$URL" &
+
+CHROME_PID=$!
+echo "✅ Chrome started with PID: $CHROME_PID"
+echo ""
+echo "🔍 Verify debugging is working:"
+echo "   curl http://localhost:9222/json/version"
+echo ""
+echo "🤖 You can now use MCP browser tools in Conductor!"
+
+# Wait for Chrome process
+wait $CHROME_PID
