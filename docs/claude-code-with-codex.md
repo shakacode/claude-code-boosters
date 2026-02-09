@@ -22,10 +22,10 @@ brew install --cask codex
 
 | | Claude Code | Codex CLI |
 |---|---|---|
-| **Models** | Claude Opus 4.6, Sonnet 4.5 | GPT-5.3-Codex, GPT-5.2-Codex |
+| **Models** | Claude Opus 4.6, Sonnet 4.5 | GPT-5-Codex |
 | **Instructions file** | `CLAUDE.md` | `AGENTS.md` |
-| **Sandbox** | macOS Seatbelt, configurable | macOS Seatbelt + Linux Landlock/seccomp |
-| **Approval modes** | Permission rules in settings.json | `--approval-mode auto/read-only/full-access` |
+| **Sandbox** | macOS Seatbelt, configurable | Sandboxed by default (configurable via `sandbox_mode`) |
+| **Approval modes** | Permission rules in settings.json | `approval_policy` + `sandbox_mode` in config.toml; `--auto-edit` / `--full-auto` flags |
 | **Multi-agent** | Subagents, agent teams (experimental) | Single agent (parallelize manually) |
 | **Slash commands** | Skills/commands system | Not built-in |
 | **License** | Proprietary | Apache 2.0 |
@@ -149,24 +149,29 @@ cd ../task-api && codex
 
 ## Codex CLI Quick Reference
 
-### Approval Modes
+### Approval & Sandbox Modes
+
+Configured via `~/.codex/config.toml` with two independent settings:
+
+- **`approval_policy`**: `"untrusted"` (prompts before actions) or `"on-request"` (auto-approves)
+- **`sandbox_mode`**: `"read-only"`, `"workspace-write"`, or `"danger-full-access"`
+
+Interactive UX flags:
 
 ```bash
-codex --approval-mode auto        # Default: auto-approve workspace changes
-codex --approval-mode read-only   # Browse only, ask before changes
-codex --approval-mode full-access # Full machine access (use sparingly)
-codex --full-auto                 # No prompts, but sandboxed
+codex --auto-edit    # Auto-approve file edits, prompt for commands
+codex --full-auto    # No prompts, but sandboxed
 ```
 
 ### Configuration (`~/.codex/config.toml`)
 
 ```toml
-model = "gpt-5.2-codex"
+model = "gpt-5-codex"
 approval_policy = "untrusted"
 sandbox_mode = "workspace-write"
 
 [profiles.fast]
-model = "gpt-5.2-codex"
+model = "gpt-5-codex"
 approval_policy = "on-request"
 ```
 
