@@ -1,109 +1,85 @@
 # claude-code-boosters
 
-ShakaCode Team Shared Claude Code Commands, Agents, Skills, Tips
+ShakaCode Team Shared Claude Code Commands, Agents, Skills, and Tips.
 
-## About
+## Quick Install
 
-This repository contains shared resources for the ShakaCode team to enhance their Claude Code workflows:
+Copy what you need to your `~/.claude/` directory:
 
-- **Commands**: Custom slash commands for common development tasks
-- **Agents**: Specialized agents for specific workflows
-- **Skills**: Reusable skill definitions
-- **Tips**: Best practices and workflow optimizations
+```bash
+# Clone the repo
+git clone https://github.com/shakacode/claude-code-boosters.git
+cd claude-code-boosters
+
+# Install all commands
+cp commands/*.md ~/.claude/commands/
+
+# Install all agents
+mkdir -p ~/.claude/agents
+cp agents/*.md ~/.claude/agents/
+
+# Or install specific ones
+cp commands/self-review.md ~/.claude/commands/
+cp commands/merge-commit-msg.md ~/.claude/commands/
+```
+
+For project-level sharing, copy to your project's `.claude/commands/` or `.claude/agents/` directory instead.
 
 ## Commands
 
-### `/address-review`
+| Command | Description |
+|---------|-------------|
+| [`/address-review`](commands/address-review.md) | Fetch GitHub PR review comments and create todos to address them |
+| [`/review-all-prs`](commands/review-all-prs.md) | Review all open PRs or a specific PR, post reviews to GitHub |
+| [`/self-review`](commands/self-review.md) | Comprehensive self-review of uncommitted changes before creating a PR |
+| [`/merge-commit-msg`](commands/merge-commit-msg.md) | Generate a structured merge commit message from PR changes |
+| [`/optimize`](commands/optimize.md) | Analyze code for performance issues with structured recommendations |
+| [`/security-review`](commands/security-review.md) | Review code for security vulnerabilities (OWASP Top 10 checklist) |
 
-Fetch GitHub PR review comments and create todos to address them.
+## Agents
 
-**Usage:**
-- `/address-review 12345` - Fetch all comments from PR #12345
-- `/address-review https://github.com/org/repo/pull/12345` - Use full PR URL
-- `/address-review https://github.com/org/repo/pull/12345#pullrequestreview-123456789` - Fetch specific review
+| Agent | Description |
+|-------|-------------|
+| [`pr-testing-agent`](agents/pr-testing-agent.md) | Identify and run only the tests affected by PR changes |
 
-**Installation:**
+Install to `~/.claude/agents/` (personal) or `.claude/agents/` (project).
 
-Copy `commands/address-review.md` to your `~/.claude/commands/` directory:
+## Templates
 
-```bash
-cp commands/address-review.md ~/.claude/commands/
-```
+Starter templates for new projects:
 
-### `/review-all-prs`
+| Template | Description |
+|----------|-------------|
+| [`CLAUDE.md`](templates/CLAUDE.md) | Project-level Claude Code instructions template |
+| [`AGENTS.md`](templates/AGENTS.md) | Cross-tool AI agent instructions template (works with Codex CLI, Cursor, etc.) |
 
-Review all open PRs or a specific PR with comprehensive code analysis and post reviews directly to GitHub.
+## Documentation
 
-**Usage:**
-- `/review-all-prs` - Review all open PRs and post comments
-- `/review-all-prs 347` - Review only PR #347 and post comment
-- `/review-all-prs --dry-run` - Review all PRs without posting (preview mode)
-- `/review-all-prs 347 --dry-run` - Review PR #347 without posting
-
-**Features:**
-- Comprehensive analysis: code quality, security, performance, testing, documentation
-- Structured review format matching GitHub Actions Claude Code reviews
-- Dry-run mode for testing before posting publicly
-- Rate limiting warnings for batch reviews
-- Error handling for common issues
-
-**Installation:**
-
-Copy `commands/review-all-prs.md` to your `~/.claude/commands/` directory:
-
-```bash
-cp commands/review-all-prs.md ~/.claude/commands/
-```
-
-**Documentation:**
-- Full usage guide: [docs/review-all-prs-usage.md](docs/review-all-prs-usage.md)
-- Example review: [docs/sample-review-output.md](docs/sample-review-output.md)
+| Guide | Description |
+|-------|-------------|
+| [Writing Effective CLAUDE.md](docs/claude-md-guide.md) | Memory hierarchy, what to include/exclude, path-specific rules, imports |
+| [Custom Agents and Skills](docs/custom-agents-and-skills.md) | Creating custom agents, skills, slash commands, and agent teams |
+| [Hooks Guide](docs/hooks-guide.md) | Lifecycle hooks for automation, quality gates, and safety |
+| [Claude Code + Codex CLI](docs/claude-code-with-codex.md) | Using both tools together, shared instructions, workflows |
+| [Tips and Tricks](docs/tips-and-tricks.md) | Context management, parallel sessions, effective prompting, common pitfalls |
 
 ## Scripts
 
-### `bin/chrome-mcp`
+| Script | Description |
+|--------|-------------|
+| [`bin/chrome-mcp`](bin/chrome-mcp) | Launch Chrome with a separate profile for MCP browser debugging |
 
-Launches Google Chrome with a separate profile configured for MCP (Model Context Protocol) browser debugging. This keeps your MCP/debugging session isolated from your regular browsing.
+## GitHub Actions
 
-**Features:**
-- Dedicated Chrome profile for MCP tools
-- Remote debugging enabled on port 9222
-- Default URL or custom URL support
-- Clean separation from regular Chrome browsing
-
-**Usage:**
-
-```bash
-# Launch with default URL
-./bin/chrome-mcp
-
-# Launch with custom URL
-./bin/chrome-mcp https://example.com
-```
-
-**Installation:**
-
-Copy to your local bin directory and make it executable:
-
-```bash
-cp bin/chrome-mcp ~/bin/chrome-mcp
-chmod +x ~/bin/chrome-mcp
-```
-
-**What it does:**
-- Creates/uses a dedicated Chrome profile at `~/Library/Application Support/Google/Chrome-MCP-Profile`
-- Enables remote debugging on `localhost:9222`
-- Opens Chrome in a separate window that can be controlled via MCP browser tools in Conductor
-- Displays helpful debugging information and verification commands
-
-**Verify it's working:**
-
-```bash
-curl http://localhost:9222/json/version
-```
-
-You should see JSON output with Chrome debugging information.
+| Workflow | Description |
+|----------|-------------|
+| [Claude Code Review](.github/workflows/claude-code-review.yml) | Automatic PR review on open/sync |
+| [Claude Code](.github/workflows/claude.yml) | Respond to `@claude` mentions in issues/PRs |
 
 ## Contributing
 
-Add new commands, agents, or skills by creating appropriately named markdown files in their respective directories.
+1. Add new commands to `commands/`
+2. Add new agents to `agents/`
+3. Add documentation to `docs/`
+4. Keep everything generic -- project-specific instructions belong in project CLAUDE.md files
+5. All files must end with a newline character
