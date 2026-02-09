@@ -10,6 +10,8 @@ Analyze the specified code for performance issues and suggest optimizations.
 
 2. **Read the code** and analyze for these performance concerns:
 
+## Performance Areas
+
 ### Database & Queries
 - N+1 query patterns
 - Missing indexes (check schema/migrations)

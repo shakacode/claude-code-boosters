@@ -12,6 +12,7 @@ git clone https://github.com/shakacode/claude-code-boosters.git
 cd claude-code-boosters
 
 # Install all commands
+mkdir -p ~/.claude/commands
 cp commands/*.md ~/.claude/commands/
 
 # Install all agents

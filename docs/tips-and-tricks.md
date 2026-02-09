@@ -23,7 +23,7 @@ This keeps your main context focused on the actual work.
 ### Course-Correct Early
 
 - **`Esc`** -- Stop Claude mid-response if it's going the wrong direction
-- **`Esc` + `Esc`** or **`/rewind`** -- Undo the last turn entirely
+- **`Esc` + `Esc`** (double-escape) or **`/rewind`** -- Open the rewind menu to undo the last turn
 - **`/clear`** -- Nuclear option, fresh start
 
 The cost of letting Claude go down the wrong path for 5 turns is much higher than stopping it after 1.
@@ -138,15 +138,15 @@ Pre-approve common operations to avoid constant permission prompts:
 {
   "permissions": {
     "allow": [
-      "Bash(npm run *)",
-      "Bash(pnpm *)",
+      "Bash(npm run:*)",
+      "Bash(pnpm:*)",
       "Bash(git status)",
-      "Bash(git diff *)",
-      "Bash(git log *)"
+      "Bash(git diff:*)",
+      "Bash(git log:*)"
     ],
     "deny": [
-      "Bash(rm -rf *)",
-      "Bash(git push --force *)"
+      "Bash(rm -rf:*)",
+      "Bash(git push --force:*)"
     ]
   }
 }

@@ -13,7 +13,7 @@ Tool-specific instructions go in CLAUDE.md or .cursorrules. Universal rules go h
 
 ### Directory Structure
 
-```
+```text
 src/
   api/          -- [description]
   services/     -- [description]
