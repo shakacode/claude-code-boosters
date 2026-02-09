@@ -31,22 +31,13 @@ brew install --cask codex
 | **License** | Proprietary | Apache 2.0 |
 | **Config** | `~/.claude/settings.json` | `~/.codex/config.toml` |
 
-## Strengths-Based Task Delegation
+## When to Use Which
 
-Based on developer benchmarks and real-world usage:
+Both tools are highly capable across all tasks. In practice, use whichever you're more fluent with. Some reasons to reach for one over the other:
 
-| Task | Better Tool | Why |
-|------|------------|-----|
-| Rapid prototyping | Claude Code | Faster output, better at large implementations |
-| Complex debugging | Claude Code | Stronger at multi-step reasoning chains |
-| UI/frontend code | Claude Code | Better at React, CSS, visual components |
-| Test-driven development | Claude Code | Subagent support helps run tests in parallel |
-| Code review | Codex CLI | Thorough analysis, good at catching subtle issues |
-| Large refactors | Codex CLI | Context compression handles sprawling changes |
-| ML/data science | Codex CLI | Stronger domain knowledge |
-| CI/CD pipelines | Either | Both handle YAML/config well |
-
-These are generalizations -- both tools are highly capable across all tasks. Use whichever you're more fluent with.
+- **Claude Code** has built-in multi-agent support (subagents, agent teams), skills/commands, and hooks
+- **Codex CLI** is open-source, has strict sandboxing by default, and works with your existing ChatGPT subscription
+- When you're stuck with one tool, try the other -- different models sometimes see different solutions
 
 ## Shared Instructions: AGENTS.md Strategy
 
@@ -189,7 +180,6 @@ approval_policy = "on-request"
 
 ## Cost Considerations
 
-- **Codex CLI**: Included with ChatGPT Plus ($20/month) or Pro ($200/month) plans, or pay-per-token via API
-- **Claude Code**: Requires Claude Pro ($20/month, limited), Max ($100/month), or API access
+Both tools offer subscription-based access and pay-per-token API access. Check current pricing at [claude.ai](https://claude.ai) and [chatgpt.com](https://chatgpt.com) as plans and pricing change frequently.
 
 For teams doing heavy AI-assisted development, having access to both gives you flexibility to use whichever is faster, cheaper, or better for the specific task at hand.

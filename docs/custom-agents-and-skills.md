@@ -196,5 +196,4 @@ Display modes:
 - **Start simple.** A single-file command in `.claude/commands/` is often enough.
 - **Use `context: fork`** for skills that generate lots of output to keep your main context clean.
 - **Choose the right model.** Use `haiku` for fast read-only tasks, `sonnet` for balanced work, keep `opus` for the hardest problems.
-- **Test with `--dry-run`** when skills interact with external services.
 - **Share project agents via git** in `.claude/agents/` so the whole team benefits.

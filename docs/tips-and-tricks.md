@@ -32,7 +32,7 @@ The cost of letting Claude go down the wrong path for 5 turns is much higher tha
 
 ### Use Plan Mode for Complex Tasks
 
-Press `Ctrl+G` to enter plan mode. Claude will research and plan without making changes. This is invaluable for:
+Press `Shift+Tab` twice (or use the `/plan` command) to enter plan mode. Claude will research and plan without making changes. This is invaluable for:
 
 - Multi-file refactors
 - New feature implementation
@@ -152,21 +152,11 @@ Pre-approve common operations to avoid constant permission prompts:
 }
 ```
 
-### Effort Level (Opus 4.6)
-
-Control thinking depth with the `CLAUDE_CODE_EFFORT_LEVEL` environment variable:
-
-- `low` -- Quick answers, less deliberation
-- `medium` -- Balanced (default)
-- `high` -- Deep thinking, best for hard problems
-
 ### Key Environment Variables
 
 | Variable | Purpose |
 |----------|---------|
 | `ANTHROPIC_MODEL` | Override the default model |
-| `CLAUDE_CODE_EFFORT_LEVEL` | Thinking depth: low/medium/high |
-| `CLAUDE_CODE_SUBAGENT_MODEL` | Model for subagents |
 | `MAX_THINKING_TOKENS` | Extended thinking budget |
 
 ## Workflow Patterns That Work Well
@@ -182,7 +172,7 @@ Control thinking depth with the `CLAUDE_CODE_EFFORT_LEVEL` environment variable:
 
 ### Code Review Workflow
 
-1. `/review-all-prs --dry-run` to preview
+1. `/review-all-prs` to review open PRs
 2. `/review-all-prs 347` for specific PR
 3. `/address-review <PR-URL>` to handle review feedback
 
@@ -195,7 +185,7 @@ Control thinking depth with the `CLAUDE_CODE_EFFORT_LEVEL` environment variable:
 
 ### Learning a New Codebase
 
-1. Start with plan mode (`Ctrl+G`)
+1. Start with plan mode (`Shift+Tab` twice or `/plan`)
 2. Ask Claude to explore the architecture
 3. Use subagents to investigate specific areas
 4. Build a mental model before making changes

@@ -16,8 +16,8 @@ Hooks are user-defined shell commands or LLM prompts that execute automatically 
 | `SubagentStart` | Subagent is spawned | Track agent activity |
 | `SubagentStop` | Subagent finishes | Collect results |
 | `Stop` | Claude finishes responding | Quality checks, follow-up prompts |
-| `TeammateIdle` | Agent team teammate going idle | Assign new work |
-| `TaskCompleted` | Task marked complete | Validation gates |
+| `TeammateIdle` | Agent team teammate going idle (experimental) | Assign new work |
+| `TaskCompleted` | Task marked complete (experimental) | Validation gates |
 | `PreCompact` | Before context compaction | Save important context |
 | `SessionEnd` | Session terminates | Cleanup, reporting |
 
