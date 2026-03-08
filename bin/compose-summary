@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REVIEW_DIR="/tmp/file-by-file-review"
+REPORT_DIR="$REVIEW_DIR/report"
+SUMMARY="$REVIEW_DIR/summary.txt"
+
+if [ ! -d "$REPORT_DIR" ]; then
+  echo "ERROR: No report directory found. Run the review first."
+  exit 1
+fi
+
+GOOD_COUNT=0
+BAD_COUNT=0
+GOOD_FILES=""
+BAD_FILES=""
+
+for f in "$REPORT_DIR"/*_GOOD.txt; do
+  [ -f "$f" ] || continue
+  GOOD_COUNT=$((GOOD_COUNT + 1))
+  GOOD_FILES+="$(cat "$f")"$'\n\n'
+done
+
+for f in "$REPORT_DIR"/*_BAD.txt; do
+  [ -f "$f" ] || continue
+  BAD_COUNT=$((BAD_COUNT + 1))
+  BAD_FILES+="$(cat "$f")"$'\n\n'
+done
+
+TOTAL=$((GOOD_COUNT + BAD_COUNT))
+
+cat > "$SUMMARY" <<EOF
+# Review Summary
+
+Total files reviewed: $TOTAL
+GOOD: $GOOD_COUNT
+BAD: $BAD_COUNT
+
+## BAD files
+
+$BAD_FILES
+## GOOD files
+
+$GOOD_FILES
+EOF
+
+echo "Summary written to $SUMMARY ($TOTAL files: $GOOD_COUNT good, $BAD_COUNT bad)"

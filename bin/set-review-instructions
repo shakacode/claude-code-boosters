@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ $# -lt 1 ]; then
+  echo "Usage: set-review-instructions \"<instructions>\""
+  exit 1
+fi
+
+REVIEW_DIR="/tmp/file-by-file-review"
+mkdir -p "$REVIEW_DIR"
+
+# Save review instructions
+echo "$1" > "$REVIEW_DIR/review_instructions.txt"
+
+# Auto-detect base branch and fetch latest
+if git rev-parse --verify origin/main &>/dev/null; then
+  BASE_BRANCH="origin/main"
+  BASE_REF="main"
+elif git rev-parse --verify origin/master &>/dev/null; then
+  BASE_BRANCH="origin/master"
+  BASE_REF="master"
+else
+  echo "ERROR: Could not find origin/main or origin/master"
+  exit 1
+fi
+
+echo "Fetching latest $BASE_REF from origin..."
+git fetch origin "$BASE_REF" --quiet
+
+MERGE_BASE=$(git merge-base "$BASE_BRANCH" HEAD)
+echo "$MERGE_BASE" > "$REVIEW_DIR/base_ref.txt"
+
+# Generate changed files list
+git diff --name-only "$MERGE_BASE"..HEAD > "$REVIEW_DIR/changed_files.txt"
+
+FILE_COUNT=$(wc -l < "$REVIEW_DIR/changed_files.txt")
+echo "Review initialized."
+echo "  Base: $MERGE_BASE (from $BASE_BRANCH)"
+echo "  Changed files: $FILE_COUNT"
+echo "  Instructions: $1"

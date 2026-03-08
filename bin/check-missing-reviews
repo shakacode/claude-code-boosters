@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REVIEW_DIR="/tmp/file-by-file-review"
+
+if [ ! -f "$REVIEW_DIR/changed_files.txt" ]; then
+  echo "ERROR: Run set-review-instructions first."
+  exit 1
+fi
+
+TOTAL=$(wc -l < "$REVIEW_DIR/changed_files.txt")
+MISSING=0
+MISSING_LIST=""
+
+for i in $(seq 1 "$TOTAL"); do
+  FILEPATH=$(sed -n "${i}p" "$REVIEW_DIR/changed_files.txt")
+  SANITIZED=$(echo "$FILEPATH" | sed 's|/|__|g')
+
+  if [ ! -f "$REVIEW_DIR/report/${SANITIZED}_GOOD.txt" ] && [ ! -f "$REVIEW_DIR/report/${SANITIZED}_BAD.txt" ]; then
+    MISSING=$((MISSING + 1))
+    MISSING_LIST="${MISSING_LIST}  ${i}. ${FILEPATH}\n"
+  fi
+done
+
+echo "Reviewed: $((TOTAL - MISSING)) / $TOTAL"
+
+if [ "$MISSING" -eq 0 ]; then
+  echo "All files have been reviewed."
+  exit 0
+else
+  echo "Missing reviews ($MISSING):"
+  printf "$MISSING_LIST"
+  exit 1
+fi

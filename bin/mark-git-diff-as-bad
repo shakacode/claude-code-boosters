@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ $# -lt 2 ]; then
+  echo "Usage: mark-git-diff-as-bad <file_index> \"<reason>\""
+  exit 1
+fi
+
+REVIEW_DIR="/tmp/file-by-file-review"
+INDEX="$1"
+REASON="$2"
+
+if [ ! -f "$REVIEW_DIR/changed_files.txt" ] || [ ! -f "$REVIEW_DIR/base_ref.txt" ]; then
+  echo "ERROR: Run set-review-instructions first."
+  exit 1
+fi
+
+FILEPATH=$(sed -n "${INDEX}p" "$REVIEW_DIR/changed_files.txt")
+BASE=$(cat "$REVIEW_DIR/base_ref.txt")
+SANITIZED=$(echo "$FILEPATH" | sed 's|/|__|g')
+
+mkdir -p "$REVIEW_DIR/report"
+
+# Remove any existing GOOD verdict for this file
+rm -f "$REVIEW_DIR/report/${SANITIZED}_GOOD.txt"
+
+cat > "$REVIEW_DIR/report/${SANITIZED}_BAD.txt" <<EOF
+$FILEPATH
+git diff $BASE..HEAD -- $FILEPATH
+BAD: $REASON
+EOF
+
+echo "Marked file $INDEX ($FILEPATH) as BAD: $REASON"
