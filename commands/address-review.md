@@ -4,6 +4,8 @@ description: Fetch GitHub PR review comments and create todos to address them
 
 Fetch review comments from a GitHub PR in this repository and create a todo list to address each comment.
 
+The user's input is: $ARGUMENTS
+
 # Instructions
 
 ## Step 1: Determine the Repository
@@ -16,7 +18,7 @@ If this command fails, ensure `gh` CLI is installed and authenticated (`gh auth 
 
 ## Step 2: Parse User Input
 
-Extract the PR number and optional review/comment ID from the user's message:
+Extract the PR number and optional review/comment ID from `$ARGUMENTS`:
 
 **Supported formats:**
 
@@ -41,15 +43,33 @@ gh api repos/${REPO}/issues/comments/{COMMENT_ID} | jq '{body: .body, user: .use
 
 **If a specific review ID is provided (`#pullrequestreview-...`):**
 
-```bash
-gh api repos/${REPO}/pulls/{PR_NUMBER}/reviews/{REVIEW_ID}/comments | jq '[.[] | {id: .id, path: .path, body: .body, line: .line, start_line: .start_line, user: .user.login}]'
-```
-
-**If only PR number is provided (fetch all PR review comments):**
+First fetch the review body itself (reviewers often leave overall feedback here):
 
 ```bash
-gh api repos/${REPO}/pulls/{PR_NUMBER}/comments | jq '[.[] | {id: .id, path: .path, body: .body, line: .line, start_line: .start_line, user: .user.login, in_reply_to_id: .in_reply_to_id}]'
+gh api repos/${REPO}/pulls/{PR_NUMBER}/reviews/{REVIEW_ID} | jq '{id: .id, body: .body, state: .state, user: .user.login}'
 ```
+
+Then fetch inline comments attached to that review:
+
+```bash
+gh api --paginate repos/${REPO}/pulls/{PR_NUMBER}/reviews/{REVIEW_ID}/comments | jq '[.[] | {id: .id, path: .path, body: .body, line: .line, start_line: .start_line, user: .user.login}]'
+```
+
+Include the review body as a todo item if it contains actionable feedback.
+
+**If only PR number is provided (fetch all comments):**
+
+Fetch both inline review comments and general PR discussion comments:
+
+```bash
+# Inline code review comments
+gh api --paginate repos/${REPO}/pulls/{PR_NUMBER}/comments | jq '[.[] | {id: .id, type: "review", path: .path, body: .body, line: .line, start_line: .start_line, user: .user.login, in_reply_to_id: .in_reply_to_id}]'
+
+# General PR discussion comments (not tied to specific lines)
+gh api --paginate repos/${REPO}/issues/{PR_NUMBER}/comments | jq '[.[] | {id: .id, type: "issue", body: .body, user: .user.login, html_url: .html_url}]'
+```
+
+Merge and de-duplicate results before creating todos.
 
 **Filtering comments:**
 
@@ -70,7 +90,6 @@ Parse the response and create a todo list with TodoWrite containing:
 - One todo per actionable review comment/suggestion
 - For file-specific comments: `"{file}:{line} - {comment_summary} (@{username})"` (content)
 - For general comments: Parse the comment body and extract actionable items
-- Format activeForm: `"Addressing {brief description}"`
 - All todos should start with status: `"pending"`
 
 ## Step 5: Present to User
@@ -85,25 +104,17 @@ Present the todos to the user - **DO NOT automatically start addressing them**:
 
 When addressing items, after completing each todo item, reply to the original review comment explaining how it was addressed.
 
-**For issue comments (general PR comments):**
+**For general PR discussion comments (issue comments):**
 
 ```bash
 gh api repos/${REPO}/issues/{PR_NUMBER}/comments -X POST -f body="<response>"
 ```
 
-**For PR review comments (file-specific, replying to a thread):**
+**For inline review comments (replying to a thread):**
 
 ```bash
 gh api repos/${REPO}/pulls/{PR_NUMBER}/comments/{COMMENT_ID}/replies -X POST -f body="<response>"
 ```
-
-**For standalone review comments (not in a thread):**
-
-```bash
-gh api repos/${REPO}/pulls/{PR_NUMBER}/comments -X POST -f body="<response>" -f commit_id="<COMMIT_SHA>" -f path="<FILE_PATH>" -f line=<LINE_NUMBER> -f side="RIGHT"
-```
-
-Note: `side` is required when using `line`. Use `"RIGHT"` for the PR commit side (most common) or `"LEFT"` for the base commit side.
 
 The response should briefly explain:
 
@@ -150,4 +161,3 @@ Which items would you like me to address? (e.g., "all", "1,2", or "1")
 
 - Rate limiting: GitHub API has rate limits; if you hit them, wait a few minutes
 - Private repos: Requires appropriate `gh` authentication scope
-- Large PRs: PRs with many comments may require pagination (not currently handled)
