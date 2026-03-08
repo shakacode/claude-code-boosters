@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ $# -lt 1 ]; then
+  echo "Usage: print-git-diff <file_index>"
+  exit 1
+fi
+
+REVIEW_DIR="/tmp/file-by-file-review"
+INDEX="$1"
+
+if [ ! -f "$REVIEW_DIR/changed_files.txt" ] || [ ! -f "$REVIEW_DIR/base_ref.txt" ]; then
+  echo "ERROR: Run set-review-instructions first."
+  exit 1
+fi
+
+TOTAL=$(wc -l < "$REVIEW_DIR/changed_files.txt")
+if [ "$INDEX" -lt 1 ] || [ "$INDEX" -gt "$TOTAL" ]; then
+  echo "ERROR: Index $INDEX out of range (1-$TOTAL)"
+  exit 1
+fi
+
+FILEPATH=$(sed -n "${INDEX}p" "$REVIEW_DIR/changed_files.txt")
+BASE=$(cat "$REVIEW_DIR/base_ref.txt")
+
+# Sanitize filename for report lookup
+SANITIZED=$(echo "$FILEPATH" | sed 's|/|__|g')
+
+# Check review status
+REVIEW_STATUS="not yet reviewed"
+if [ -f "$REVIEW_DIR/report/${SANITIZED}_GOOD.txt" ]; then
+  REVIEW_STATUS="GOOD"
+elif [ -f "$REVIEW_DIR/report/${SANITIZED}_BAD.txt" ]; then
+  REVIEW_STATUS="BAD"
+fi
+
+echo "========================================"
+echo "FILE: $FILEPATH"
+echo "INDEX: $INDEX / $TOTAL"
+echo "REVIEW STATUS: $REVIEW_STATUS"
+echo "========================================"
+
+echo ""
+echo "======== GIT DIFF ========"
+git diff "$BASE"..HEAD -- "$FILEPATH"
+
+echo ""
+echo "======== FILE BEFORE ========"
+if git show "$BASE":"$FILEPATH" &>/dev/null; then
+  git show "$BASE":"$FILEPATH"
+else
+  echo "(NEW FILE — did not exist at base)"
+fi
+
+echo ""
+echo "======== FILE AFTER ========"
+if git show HEAD:"$FILEPATH" &>/dev/null; then
+  git show HEAD:"$FILEPATH"
+else
+  echo "(DELETED — does not exist at HEAD)"
+fi
+
+echo ""
+echo "======== REVIEW INSTRUCTIONS ========"
+cat "$REVIEW_DIR/review_instructions.txt"

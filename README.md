@@ -1,6 +1,6 @@
-# claude-code-boosters
+# claude-code-commands-skills-agents
 
-ShakaCode Team Shared Claude Code Commands, Agents, Skills, and Tips.
+ShakaCode Team Shared Claude Code and Codex CLI Commands, Agents, Skills, and Tips.
 
 ## Quick Install
 
@@ -8,8 +8,8 @@ Copy what you need to your `~/.claude/` directory:
 
 ```bash
 # Clone the repo
-git clone https://github.com/shakacode/claude-code-boosters.git
-cd claude-code-boosters
+git clone https://github.com/shakacode/claude-code-commands-skills-agents.git
+cd claude-code-commands-skills-agents
 
 # Install all commands
 mkdir -p ~/.claude/commands
@@ -36,6 +36,7 @@ For project-level sharing, copy to your project's `.claude/commands/` or `.claud
 | [`/merge-commit-msg`](commands/merge-commit-msg.md) | Generate a structured merge commit message from PR changes |
 | [`/optimize`](commands/optimize.md) | Analyze code for performance issues with structured recommendations |
 | [`/security-review`](commands/security-review.md) | Review code for security vulnerabilities (OWASP Top 10 checklist) |
+| [`/file-by-file-review`](commands/file-by-file-review.md) | Review massive PRs file-by-file with parallel subagents (credit: [Romex91](https://github.com/Romex91/claude-code-file-by-file-review)) |
 
 ## Agents
 
@@ -69,6 +70,13 @@ Starter templates for new projects:
 | Script | Description |
 |--------|-------------|
 | [`bin/chrome-mcp`](bin/chrome-mcp) | Launch Chrome with a separate profile for MCP browser debugging |
+| `bin/set-review-instructions` | Initialize file-by-file review with instructions and changed file list |
+| `bin/print-git-diff` | Print diff, before/after, and review instructions for a single file |
+| `bin/mark-git-diff-as-good` | Mark a reviewed file as GOOD with a reason |
+| `bin/mark-git-diff-as-bad` | Mark a reviewed file as BAD with a reason |
+| `bin/check-missing-reviews` | Check which files still need review |
+| `bin/compose-summary` | Compose final GOOD/BAD summary report |
+| `bin/get-number-of-changed-files` | Get count of changed files in the review |
 
 ## GitHub Actions
 
